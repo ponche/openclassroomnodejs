@@ -1,7 +1,17 @@
 const express = require('express');
-const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const secret = require('./secret/MongoDb'); 
 
 const app = express();
+
+mongoose.connect(secret,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,10 +20,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 
 app.post('/api/stuff', (req, res, next) => {
-    console.log(res.body); 
+    console.log(res.body);
     res.status(201).json({
         message: 'Object crée !'
     });
