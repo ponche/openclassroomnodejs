@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const secret = require('./secret/MongoDb'); 
+const Thing = require('./models/Thing');
 
 const app = express();
 
@@ -23,10 +24,13 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.post('/api/stuff', (req, res, next) => {
-    console.log(res.body);
-    res.status(201).json({
-        message: 'Object crée !'
+    delete req.body._id; 
+    const thing = new Thing({
+        ...req.body
     });
+    thing.save()
+        .then(() => res.status(201).json({message: 'Objet enregistré'}))
+        .catch(error => res.status(400).json({ error }));
 });
 
 
